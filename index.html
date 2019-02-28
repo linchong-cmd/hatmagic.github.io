@@ -239,6 +239,137 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/CTF漏洞函数总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JhonMess">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MagicZ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/28/CTF漏洞函数总结/" itemprop="url">CTF漏洞函数总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-28T17:08:08+08:00">
+                2019-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="一、要求变量原值不同但md5或sha1相同的情况下"><a href="#一、要求变量原值不同但md5或sha1相同的情况下" class="headerlink" title="一、要求变量原值不同但md5或sha1相同的情况下"></a>一、要求变量原值不同但md5或sha1相同的情况下</h3><p>1.0e开头的全部相等（==判断）</p>
+<p>240610708 和 QNKCDZO md5值类型相似，但并不相同，在”==”相等操作符的运算下，结果返回了true.<br>Md5和sha1一样</p>
+<p>2.利用数组绕过（===判断）</p>
+<p>Md5和sha1对一个数组进行加密将返回NULL；而NULL===NULL返回true，所以可绕过判断</p>
+<h3 id="二、Strcmp利用数组绕过"><a href="#二、Strcmp利用数组绕过" class="headerlink" title="二、Strcmp利用数组绕过"></a>二、Strcmp利用数组绕过</h3><p>查看php的手册:</p>
+<p>int strcmp ( string $str1 , string $str2 )</p>
+<p>Returns &lt; 0 if str1 is less than str2; &gt; 0 if str1 is greater than str2, and 0 if they are equal.</p>
+<p>当输入的两个值为不是字符串时就会产生不预期的返回值：</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/28/CTF漏洞函数总结/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/命令执行getshell/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -523,7 +654,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
