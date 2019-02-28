@@ -309,11 +309,11 @@
 
       
         
-          <h3 id="一、要求变量原值不同但md5或sha1相同的情况下"><a href="#一、要求变量原值不同但md5或sha1相同的情况下" class="headerlink" title="一、要求变量原值不同但md5或sha1相同的情况下"></a>一、要求变量原值不同但md5或sha1相同的情况下</h3><p>1.0e开头的全部相等（==判断）</p>
+          <h3 id="要求变量原值不同但md5或sha1相同的情况下"><a href="#要求变量原值不同但md5或sha1相同的情况下" class="headerlink" title="要求变量原值不同但md5或sha1相同的情况下"></a>要求变量原值不同但md5或sha1相同的情况下</h3><p>1.0e开头的全部相等（==判断）</p>
 <p>240610708 和 QNKCDZO md5值类型相似，但并不相同，在”==”相等操作符的运算下，结果返回了true.<br>Md5和sha1一样</p>
 <p>2.利用数组绕过（===判断）</p>
 <p>Md5和sha1对一个数组进行加密将返回NULL；而NULL===NULL返回true，所以可绕过判断</p>
-<h3 id="二、Strcmp利用数组绕过"><a href="#二、Strcmp利用数组绕过" class="headerlink" title="二、Strcmp利用数组绕过"></a>二、Strcmp利用数组绕过</h3><p>查看php的手册:</p>
+<h3 id="Strcmp利用数组绕过"><a href="#Strcmp利用数组绕过" class="headerlink" title="Strcmp利用数组绕过"></a>Strcmp利用数组绕过</h3><p>查看php的手册:</p>
 <p>int strcmp ( string $str1 , string $str2 )</p>
 <p>Returns &lt; 0 if str1 is less than str2; &gt; 0 if str1 is greater than str2, and 0 if they are equal.</p>
 <p>当输入的两个值为不是字符串时就会产生不预期的返回值：</p>
